@@ -2,7 +2,7 @@
 #
 # Slipstream Menubar installer for Apple Silicon Macs.
 #
-#   curl -fsSL https://github.com/mzinner/slipstream-menubar-item/raw/main/install.sh | sh
+#   curl -fsSL https://github.com/npanj/slipstream-menubar/raw/main/install.sh | sh
 #
 # Downloads the app from a GitHub release, verifies it against the release's
 # SHA256SUMS.<version>.txt, installs it into /Applications (or ~/Applications when
@@ -14,13 +14,13 @@
 # Environment:
 #   SLIPSTREAM_MENUBAR_TAG   install this release tag instead of the newest, e.g. v26.10.4
 #   SLIPSTREAM_MENUBAR_DIR   the folder the app goes into (default /Applications)
-#   SLIPSTREAM_MENUBAR_REPO  owner/repo to install from (default mzinner/slipstream-menubar-item)
+#   SLIPSTREAM_MENUBAR_REPO  owner/repo to install from (default npanj/slipstream-menubar)
 #   SLIPSTREAM_MENUBAR_OPEN  0: install without starting the app
 #
 # POSIX sh, so it runs from a pipe into whatever /bin/sh is.
 set -eu
 
-REPO="${SLIPSTREAM_MENUBAR_REPO:-mzinner/slipstream-menubar-item}"
+REPO="${SLIPSTREAM_MENUBAR_REPO:-npanj/slipstream-menubar}"
 APP_NAME="Slipstream Menubar.app"
 BUNDLE_ID="local.slipstream.menubar"
 

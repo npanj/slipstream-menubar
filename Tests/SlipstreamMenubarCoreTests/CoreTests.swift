@@ -427,7 +427,7 @@ final class InstallationTests: XCTestCase {
     func testOlderSettingsDefaultToTheInstalledRelease() throws {
         let config = try JSONDecoder().decode(ServerConfig.self, from: Data(#"{"repoPath":"/r","model":"/m"}"#.utf8))
         XCTAssertFalse(config.useCheckout)
-        XCTAssertEqual(config.releaseRepository, "mzinner/slipstream")
+        XCTAssertEqual(config.releaseRepository, "npanj/slipstream")
     }
 }
 

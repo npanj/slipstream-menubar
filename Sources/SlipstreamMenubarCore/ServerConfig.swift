@@ -42,7 +42,7 @@ public struct ServerConfig: Codable, Equatable, Sendable {
     /// Setup ran to the end (or was not needed): it no longer opens at launch.
     public var setupCompleted: Bool
 
-    public static let defaultReleaseRepository = "mzinner/slipstream"
+    public static let defaultReleaseRepository = "npanj/slipstream"
 
     public init(
         useCheckout: Bool = false,

@@ -55,7 +55,7 @@ public struct AppRelease: Equatable, Sendable {
 }
 
 public enum AppUpdate {
-    public static let repository = "mzinner/slipstream-menubar-item"
+    public static let repository = "npanj/slipstream-menubar"
     /// An automatic check runs at most this often.
     public static let checkInterval: TimeInterval = 20 * 60 * 60
     /// After a failed automatic check (offline, say), the next try waits this long.

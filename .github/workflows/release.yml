@@ -73,7 +73,7 @@ jobs:
             echo "/Applications, clears the quarantine mark and starts it."
             echo
             echo '```sh'
-            echo "curl -fsSL https://github.com/mzinner/slipstream-menubar-item/raw/main/install.sh | SLIPSTREAM_MENUBAR_TAG=$TAG sh"
+            echo "curl -fsSL https://github.com/npanj/slipstream-menubar/raw/main/install.sh | SLIPSTREAM_MENUBAR_TAG=$TAG sh"
             echo '```'
             echo
             echo "Or download one of"

@@ -20,7 +20,7 @@ tokens per second (incoming) over ↑ output tokens per second (outgoing).
 Paste into Terminal to download, verify, install and start the latest release:
 
 ```sh
-curl -fsSL https://github.com/mzinner/slipstream-menubar-item/raw/main/install.sh | sh
+curl -fsSL https://github.com/npanj/slipstream-menubar/raw/main/install.sh | sh
 ```
 
 It installs into /Applications (~/Applications if that is not writable) and clears the
@@ -28,7 +28,7 @@ quarantine mark, so macOS opens the app without asking. `SLIPSTREAM_MENUBAR_TAG=
 release; `sh install.sh --help` lists the options. On its first start the app sets up Slipstream
 and a model.
 
-Or, from the [latest release](https://github.com/mzinner/slipstream-menubar-item/releases/latest), get
+Or, from the [latest release](https://github.com/npanj/slipstream-menubar/releases/latest), get
 either `Slipstream-Menubar.<version>.dmg` (open it and drag the app onto *Applications*) or
 `Slipstream-Menubar.app.<version>.zip` (unzip it and move *Slipstream Menubar.app* to
 /Applications). The app is signed ad hoc, not notarized, so allow it once in *System Settings →
@@ -50,12 +50,12 @@ its API key in the Keychain.
 
 The app runs the Slipstream it finds at `~/.local/bin/slipstream`, else `slipstream` on your
 login shell's PATH. If there is none, the menu offers **Install Slipstream…**: it downloads the
-latest release of [mzinner/slipstream](https://github.com/mzinner/slipstream/releases), shows the
+latest release of [npanj/slipstream](https://github.com/npanj/slipstream/releases), shows the
 progress, verifies the checksum, installs into `~/.local/share/slipstream/<version>` and links
 `~/.local/bin/slipstream`, keeping the two newest versions, as the release's `install.sh` does:
 
 ```sh
-curl -fsSL https://github.com/mzinner/slipstream/raw/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/npanj/slipstream/main/install.sh | sh
 ```
 
 Settings → Server → Run can switch to a source checkout instead.
@@ -212,6 +212,11 @@ Pushing a tag such as `v26.10.0` runs `.github/workflows/release.yml`: it tests,
 with that version, and attaches a `.dmg`, a `.zip` and their SHA-256 sums to a GitHub release.
 Running the workflow by hand with an existing tag rebuilds that release's files.
 
+## Authors & Credits
+
+- **Mike Zinner** ([@mzinner](https://github.com/mzinner)) — Creator and lead author of Slipstream Menubar.
+- **Nitin** ([@npanj](https://github.com/npanj)) — Co-author and maintainer; creator of Slipstream.
+
 ## License
 
-MIT, © 2026 Mike Zinner ([mzinner](https://github.com/mzinner)).
+MIT License. Original work © 2026 Mike Zinner ([mzinner](https://github.com/mzinner)).
