@@ -17,10 +17,10 @@ tokens per second (incoming) over ↑ output tokens per second (outgoing).
 
 ## Download & Install
 
-### Option A: Homebrew Cask (Recommended)
+### Option A: Homebrew (Installs both Menu Bar App and CLI Engine)
 
 ```zsh
-brew install --cask npanj/tap/slipstream-menubar
+brew install --cask npanj/tap/slipstream
 ```
 
 ### Option B: One-line install script
