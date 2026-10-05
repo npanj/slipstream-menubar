@@ -39,10 +39,40 @@ public enum ServerProcessInspector {
         return kill(pid, 0) == 0 || errno == EPERM
     }
 
-    /// True for `install/launcher.py serve …` (preparing a model) and `server/server.py …`.
+    /// True for `install/launcher.py serve …` (preparing a model), `server/server.py …`,
+    /// or `python -m server.server …`.
     public static func isSlipstreamServer(_ pid: Int32) -> Bool {
         guard isAlive(pid), let arguments = arguments(of: pid) else { return false }
-        return arguments.contains { $0.hasSuffix("install/launcher.py") || $0.hasSuffix("server/server.py") }
+        return arguments.contains {
+            $0.hasSuffix("install/launcher.py")
+                || $0.hasSuffix("server/server.py")
+                || $0 == "server.server"
+                || $0.hasSuffix(".server.server")
+        }
+    }
+
+    /// Finds any process listening on the given port that is running Slipstream.
+    public static func findListeningServer(port: Int) -> Int32? {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/sbin/lsof")
+        process.arguments = ["-ti", ":\(port)", "-sTCP:LISTEN"]
+        let pipe = Pipe()
+        process.standardOutput = pipe
+        process.standardError = FileHandle.nullDevice
+        do {
+            try process.run()
+        } catch {
+            return nil
+        }
+        process.waitUntilExit()
+        let data = pipe.fileHandleForReading.readDataToEndOfFile()
+        let text = String(decoding: data, as: UTF8.self).trimmingCharacters(in: .whitespacesAndNewlines)
+        for line in text.split(separator: "\n") {
+            if let pid = Int32(line.trimmingCharacters(in: .whitespaces)), isSlipstreamServer(pid) {
+                return pid
+            }
+        }
+        return nil
     }
 
     /// A process's argv, read with sysctl(KERN_PROCARGS2).

@@ -31,6 +31,8 @@ final class MenuController: NSObject, NSMenuDelegate {
     private var panelItem: NSMenuItem!
     private var webUIItem: NSMenuItem!
     private var updateItem: NSMenuItem!
+    private var modelItem: NSMenuItem!
+    private var modelMenu: NSMenu!
 
     struct Actions {
         var start: () -> Void
@@ -50,6 +52,8 @@ final class MenuController: NSObject, NSMenuDelegate {
         var menuOpened: (Bool) -> Void
         /// Prompt and output tokens per second while serving.
         var readout: () -> (prompt: Double, output: Double)?
+        var selectModel: (String) -> Void
+        var chooseModelFolder: () -> Void
     }
 
     init(server: ServerController, actions: Actions) {
@@ -73,6 +77,11 @@ final class MenuController: NSObject, NSMenuDelegate {
         downloadModelItem = add("Download Model…", #selector(downloadModel))
         stopItem = add("Stop Server", #selector(stop))
         forceStopItem = add("Force Stop", #selector(forceStop))
+        menu.addItem(.separator())
+        modelItem = NSMenuItem(title: "Model", action: nil, keyEquivalent: "")
+        modelMenu = NSMenu(title: "Model")
+        modelItem.submenu = modelMenu
+        menu.addItem(modelItem)
         menu.addItem(.separator())
         panelItem = add("Stats Panel", #selector(togglePanel), key: "s")
         webUIItem = add("Open Web UI", #selector(openWebUI), key: "o")
@@ -133,6 +142,34 @@ final class MenuController: NSObject, NSMenuDelegate {
         stopItem.isHidden = !status.isActive
         stopItem.isEnabled = status != .stopping
         forceStopItem.isHidden = !(status == .unresponsive || status == .stopping)
+
+        // Populate Model submenu
+        modelMenu.removeAllItems()
+        let localModels = LocalModelScanner.scan()
+        var allModels = server.config.availableModels
+        for m in localModels {
+            if !allModels.contains(where: { $0.repository == m.repository || $0.folderURL.standardizedFileURL.path == m.folderURL.standardizedFileURL.path }) {
+                allModels.append(m)
+            }
+        }
+        let currentModel = server.config.model.trimmingCharacters(in: .whitespaces)
+        let currentPath = URL(fileURLWithPath: (currentModel as NSString).expandingTildeInPath).standardizedFileURL.path
+
+        for spec in allModels {
+            let specPath = spec.folderURL.standardizedFileURL.path
+            let isCurrent = (spec.repository == currentModel) || (!currentModel.isEmpty && specPath == currentPath)
+            let item = NSMenuItem(title: spec.title, action: #selector(modelSelected(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = spec.repository
+            item.state = isCurrent ? .on : .off
+            modelMenu.addItem(item)
+        }
+
+        modelMenu.addItem(.separator())
+        let chooseItem = NSMenuItem(title: "Choose Folder…", action: #selector(chooseFolder), keyEquivalent: "")
+        chooseItem.target = self
+        modelMenu.addItem(chooseItem)
+
         panelItem.state = actions.isPanelVisible() ? .on : .off
         // The chat page is served at / unless the server runs with --no-webui.
         webUIItem.isEnabled = status == .running && !server.config.noWebUI
@@ -157,6 +194,11 @@ final class MenuController: NSObject, NSMenuDelegate {
     @objc private func start() { actions.start() }
     @objc private func stop() { actions.stop() }
     @objc private func forceStop() { actions.forceStop() }
+    @objc private func modelSelected(_ sender: NSMenuItem) {
+        guard let repository = sender.representedObject as? String else { return }
+        actions.selectModel(repository)
+    }
+    @objc private func chooseFolder() { actions.chooseModelFolder() }
     @objc private func togglePanel() { actions.togglePanel() }
     @objc private func openWebUI() {
         if let url = URL(string: "http://127.0.0.1:\(server.port)/") { NSWorkspace.shared.open(url) }

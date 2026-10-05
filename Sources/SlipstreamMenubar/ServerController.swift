@@ -120,6 +120,9 @@ final class ServerController: ObservableObject {
         if livePid == nil, let spawned = spawnedPid, ServerProcessInspector.isSlipstreamServer(spawned) {
             livePid = spawned  // between spawn and the launcher writing its lock
         }
+        if livePid == nil {
+            livePid = ServerProcessInspector.findListeningServer(port: config.port)
+        }
         let probePort = livePid != nil ? (lock?.port ?? config.port) : config.port
         async let health = probe("/health", port: probePort)
         async let ready = probe("/ready", port: probePort)

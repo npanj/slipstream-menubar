@@ -91,7 +91,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             readout: { [weak self] in
                 guard let rates = self?.stats.rates else { return (0, 0) }
                 return (rates.promptTokensPerSecond, rates.outputTokensPerSecond)
-            }
+            },
+            selectModel: { [weak self] model in self?.selectModel(model) },
+            chooseModelFolder: { [weak self] in self?.chooseModelFolder() }
         ))
 
         // Detect a server that is already running before deciding to start one.
@@ -282,6 +284,38 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             await server.refresh()
         }
         start()
+    }
+
+    private func selectModel(_ model: String) {
+        guard server.config.model != model else { return }
+        var updated = server.config
+        updated.model = model
+        saveConfig(updated)
+        server.config = updated
+        if server.status.isActive {
+            Task {
+                await restartServer()
+                menu.update()
+            }
+        } else {
+            menu.update()
+        }
+    }
+
+    private func chooseModelFolder() {
+        let panel = NSOpenPanel()
+        panel.message = "Choose a folder with a model's GGUF files or a prepared Slipstream package."
+        panel.prompt = "Use"
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        NSApp.activate(ignoringOtherApps: true)
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        guard ModelPresence.isAvailable(url.path) else {
+            alert("No model found", "\(url.lastPathComponent) holds no GGUF files or prepared package.")
+            return
+        }
+        selectModel(url.path)
     }
 
     private func showAbout() {

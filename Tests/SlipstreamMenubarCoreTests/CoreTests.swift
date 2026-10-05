@@ -704,6 +704,19 @@ final class ModelCatalogTests: XCTestCase {
         let config = try JSONDecoder().decode(ServerConfig.self, from: Data(#"{"model": "a/b"}"#.utf8))
         XCTAssertFalse(config.keepGGUFFiles)
     }
+
+    func testLocalModelFolderURL() {
+        let spec = ModelSpec(repository: "/Users/nitin/models/swift-v3", title: "Swift V3")
+        XCTAssertEqual(spec.folderURL.path, "/Users/nitin/models/swift-v3")
+    }
+
+    func testLocalModelScanner() {
+        let scanned = LocalModelScanner.scan()
+        for model in scanned {
+            XCTAssertTrue(model.repository.hasPrefix("/"))
+            XCTAssertEqual(model.folderURL.path, model.repository)
+        }
+    }
 }
 
 final class CleanupTests: XCTestCase {

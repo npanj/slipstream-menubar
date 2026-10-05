@@ -136,7 +136,12 @@ public struct ModelSpec: Codable, Equatable, Sendable {
 
     /// Where Slipstream keeps it. Not stored: settings saved by older versions name
     /// `~/models/<name>` folders, which the command line does not look in.
-    public var folderURL: URL { ModelStore.folder(for: repository) }
+    public var folderURL: URL {
+        if repository.hasPrefix("/") || repository.hasPrefix("~") || repository.hasPrefix(".") {
+            return URL(fileURLWithPath: (repository as NSString).expandingTildeInPath)
+        }
+        return ModelStore.folder(for: repository)
+    }
     /// `folderURL` for display, with `~`.
     public var folder: String { (folderURL.path as NSString).abbreviatingWithTildeInPath }
     public var treeURL: URL? {
@@ -320,3 +325,56 @@ public enum DiskCheck {
         return .ok
     }
 }
+
+/// Discovers local model directories in ~/models and ~/.slipstream/models.
+public enum LocalModelScanner {
+    public static func scan(fileManager: FileManager = .default) -> [ModelSpec] {
+        let home = fileManager.homeDirectoryForCurrentUser
+        let candidates = [
+            home.appendingPathComponent("models"),
+            ModelStore.root,
+        ]
+        var specs: [ModelSpec] = []
+        var seenPaths = Set<String>()
+
+        for dir in candidates {
+            guard let contents = try? fileManager.contentsOfDirectory(atPath: dir.path) else { continue }
+            for entry in contents {
+                guard !entry.hasPrefix(".") else { continue }
+                let modelDir = dir.appendingPathComponent(entry)
+                let standardized = modelDir.standardizedFileURL.path
+                guard !seenPaths.contains(standardized) else { continue }
+
+                if ModelPresence.isAvailable(modelDir.path, fileManager: fileManager) {
+                    seenPaths.insert(standardized)
+                    let title = prettyTitle(for: entry, at: modelDir, fileManager: fileManager)
+                    let isPackage = fileManager.fileExists(atPath: modelDir.appendingPathComponent("manifest.json").path)
+                        || fileManager.fileExists(atPath: modelDir.appendingPathComponent("prepared/manifest.json").path)
+                    specs.append(ModelSpec(
+                        repository: modelDir.path,
+                        title: title,
+                        extraFiles: [],
+                        kind: isPackage ? .package : .gguf,
+                        minimumMemoryGiB: 64,
+                        recommendedMemoryGiB: 64
+                    ))
+                }
+            }
+        }
+        return specs
+    }
+
+    private static func prettyTitle(for folderName: String, at url: URL, fileManager: FileManager) -> String {
+        switch folderName {
+        case "swift-qwen38-flash-next-v3":
+            return "Swift-Qwen3.8-Flash-Next V3 (Local)"
+        case "qwen38-flash-next-v3":
+            return "Qwen3.8-Flash-Next V3 (Local)"
+        case "swift-qwen38-27b-splash-hq":
+            return "Swift-Qwen3.8-27B-Splash-HQ (Local)"
+        default:
+            return folderName
+        }
+    }
+}
+
