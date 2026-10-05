@@ -1,4 +1,4 @@
-APP := build/Slipstream Menubar.app
+APP := build/Slipstream.app
 
 .PHONY: build test app run install clean
 
@@ -16,7 +16,7 @@ run: app
 	open "$(APP)" --args --show-panel
 
 install: app
-	rm -rf "/Applications/Slipstream Menubar.app"
+	rm -rf "/Applications/Slipstream.app"
 	cp -R "$(APP)" /Applications/
 
 clean:

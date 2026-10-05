@@ -22,10 +22,10 @@ public struct CleanupItem: Identifiable, Equatable, Sendable {
         case .releases: return "Slipstream releases"
         case .commandLink: return "The slipstream command"
         case .slipstreamData: return "Slipstream data and caches"
-        case .appSettings: return "Slipstream Menubar settings"
+        case .appSettings: return "Slipstream settings"
         case .logs: return "Server logs"
         case .model(let title): return title
-        case .app: return "Slipstream Menubar app (to the Trash)"
+        case .app: return "Slipstream app (to the Trash)"
         }
     }
 

@@ -219,7 +219,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
               let current = GPUMemoryLimit.currentMB(), current != config.gpuWiredLimitMB else { return true }
         let command = GPUMemoryLimit.command(megabytes: config.gpuWiredLimitMB)
         let source = "do shell script \"\(command)\" with prompt "
-            + "\"Slipstream Menubar raises the GPU memory limit to \(config.gpuWiredLimitMB) MB "
+            + "\"Slipstream raises the GPU memory limit to \(config.gpuWiredLimitMB) MB "
             + "for the model server.\" with administrator privileges"
         var error: NSDictionary?
         NSAppleScript(source: source)?.executeAndReturnError(&error)
@@ -307,7 +307,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         credits.append(NSAttributedString(string: lines.joined(separator: "\n"), attributes: body))
         NSApp.activate(ignoringOtherApps: true)
         NSApp.orderFrontStandardAboutPanel(options: [
-            .applicationName: "Slipstream Menubar",
+            .applicationName: "Slipstream",
             .credits: credits,
         ])
     }

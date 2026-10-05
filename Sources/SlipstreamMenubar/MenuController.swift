@@ -78,7 +78,7 @@ final class MenuController: NSObject, NSMenuDelegate {
         webUIItem = add("Open Web UI", #selector(openWebUI), key: "o")
         menu.addItem(.separator())
         add("Settings…", #selector(settings), key: ",")
-        add("About Slipstream Menubar", #selector(about))
+        add("About Slipstream", #selector(about))
         updateItem = add("Check for Updates…", #selector(checkForUpdates))
         menu.addItem(.separator())
         add("Quit", #selector(quit), key: "q")

@@ -247,7 +247,7 @@ final class AppUpdater: ObservableObject {
             guard let bundle = Bundle(url: app),
                   bundle.bundleIdentifier == Bundle.main.bundleIdentifier,
                   bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String == version
-            else { throw UpdateError(message: "The update is not Slipstream Menubar \(version)") }
+            else { throw UpdateError(message: "The update is not Slipstream \(version)") }
             try run("/usr/bin/codesign", ["--verify", "--deep", "--strict", app.path],
                     failure: "The update's code signature is broken")
             return app
@@ -280,7 +280,7 @@ final class AppUpdater: ObservableObject {
             try Self.run("/bin/sh", ["-c", command], failure: "Could not replace \(app.path)")
         } else {
             let escaped = command.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
-            let source = "do shell script \"\(escaped)\" with prompt \"Slipstream Menubar replaces itself "
+            let source = "do shell script \"\(escaped)\" with prompt \"Slipstream replaces itself "
                 + "with the new version.\" with administrator privileges"
             var error: NSDictionary?
             NSAppleScript(source: source)?.executeAndReturnError(&error)
@@ -354,11 +354,11 @@ private struct AppUpdateView: View {
         VStack(alignment: .leading, spacing: 12) {
             switch updater.phase {
             case .idle, .checking:
-                Text("Slipstream Menubar \(updater.currentVersion)").font(.headline)
+                Text("Slipstream \(updater.currentVersion)").font(.headline)
                 ProgressView().progressViewStyle(.linear)
                 Text("Looking for a newer version…").font(.caption)
             case .upToDate:
-                Text("Slipstream Menubar is up to date").font(.headline)
+                Text("Slipstream is up to date").font(.headline)
                 Text(verbatim: "Version \(updater.currentVersion) is the latest.").font(.callout).foregroundStyle(.secondary)
             case .available(let release):
                 offer(release)
@@ -411,7 +411,7 @@ private struct AppUpdateView: View {
 
     @ViewBuilder
     private func offer(_ release: AppRelease) -> some View {
-        Text("Slipstream Menubar \(release.version) is available").font(.headline)
+        Text("Slipstream \(release.version) is available").font(.headline)
         Text(verbatim: "You have \(updater.currentVersion). The server keeps running while the app updates.")
             .font(.callout).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
         if !release.changes.isEmpty {

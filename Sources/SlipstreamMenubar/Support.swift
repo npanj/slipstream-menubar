@@ -5,7 +5,7 @@ import SwiftUI
 
 /// The server's API key, kept in the login Keychain rather than the config file.
 enum APIKeyStore {
-    private static let service = "Slipstream Menubar"
+    private static let service = "Slipstream"
     private static let account = "server-api-key"
 
     static func load() -> String? {

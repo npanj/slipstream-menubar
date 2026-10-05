@@ -1,9 +1,9 @@
 #!/bin/sh
-# Builds build/Slipstream Menubar.app from the Swift package and signs it ad hoc.
+# Builds build/Slipstream.app from the Swift package and signs it ad hoc.
 set -eu
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
 CONFIGURATION=${CONFIGURATION:-release}
-APP="$ROOT/build/Slipstream Menubar.app"
+APP="$ROOT/build/Slipstream.app"
 
 swift build --package-path "$ROOT" -c "$CONFIGURATION" --arch arm64
 BINARY=$(swift build --package-path "$ROOT" -c "$CONFIGURATION" --arch arm64 --show-bin-path)/SlipstreamMenubar

@@ -46,15 +46,15 @@ jobs:
 
       - name: Package
         run: |
-          APP="build/Slipstream Menubar.app"
-          ZIP="Slipstream-Menubar.app.$VERSION.zip"
-          DMG="Slipstream-Menubar.$VERSION.dmg"
+          APP="build/Slipstream.app"
+          ZIP="Slipstream.app.$VERSION.zip"
+          DMG="Slipstream.$VERSION.dmg"
           ditto -c -k --sequesterRsrc --keepParent "$APP" "$ZIP"
           # The disk image opens to the app next to an Applications shortcut to drag it onto.
           mkdir dmg
           cp -R "$APP" dmg/
           ln -s /Applications dmg/Applications
-          hdiutil create -volname "Slipstream Menubar $VERSION" -srcfolder dmg -fs HFS+ -format UDZO "$DMG"
+          hdiutil create -volname "Slipstream $VERSION" -srcfolder dmg -fs HFS+ -format UDZO "$DMG"
           hdiutil verify "$DMG"
           shasum -a 256 "$ZIP" "$DMG" | tee "SHA256SUMS.$VERSION.txt"
 
@@ -77,8 +77,8 @@ jobs:
             echo '```'
             echo
             echo "Or download one of"
-            echo "- \`Slipstream-Menubar.$VERSION.dmg\`: open it and drag *Slipstream Menubar* onto *Applications*, or"
-            echo "- \`Slipstream-Menubar.app.$VERSION.zip\`: unzip it and move *Slipstream Menubar.app* to /Applications."
+            echo "- \`Slipstream.$VERSION.dmg\`: open it and drag *Slipstream* onto *Applications*, or"
+            echo "- \`Slipstream.app.$VERSION.zip\`: unzip it and move *Slipstream.app* to /Applications."
             echo
             echo "Already installed? The app offers the update itself (menu → Check for Updates…)."
             echo
@@ -86,7 +86,7 @@ jobs:
             echo "Allow it once with *System Settings → Privacy & Security → Open Anyway*, or run:"
             echo
             echo '```sh'
-            echo 'xattr -dr com.apple.quarantine "/Applications/Slipstream Menubar.app"'
+            echo 'xattr -dr com.apple.quarantine "/Applications/Slipstream.app"'
             echo '```'
             echo
             echo "Requires macOS 15 or later on Apple Silicon. The app installs Slipstream and a model for you."
@@ -103,10 +103,10 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
-          name: Slipstream Menubar ${{ env.VERSION }}
+          name: Slipstream ${{ env.VERSION }}
           files: |
-            Slipstream-Menubar.${{ env.VERSION }}.dmg
-            Slipstream-Menubar.app.${{ env.VERSION }}.zip
+            Slipstream.${{ env.VERSION }}.dmg
+            Slipstream.app.${{ env.VERSION }}.zip
             SHA256SUMS.${{ env.VERSION }}.txt
             install.sh
           body_path: NOTES.md

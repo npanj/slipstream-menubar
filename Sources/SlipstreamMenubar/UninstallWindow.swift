@@ -74,7 +74,7 @@ final class UninstallWindowController: NSObject, NSWindowDelegate {
         let done = NSAlert()
         done.messageText = failures.isEmpty ? "Slipstream was removed" : "Slipstream was removed, with problems"
         done.informativeText = (failures.isEmpty ? "" : failures.joined(separator: "\n") + "\n\n")
-            + (trashed ? "Slipstream Menubar is in the Trash. " : "")
+            + (trashed ? "Slipstream is in the Trash. " : "")
             + "Homebrew and hf were left installed; remove hf with `brew uninstall hf` if you no longer need it."
         done.runModal()
         NSApp.terminate(nil)
