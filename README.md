@@ -15,7 +15,15 @@ tokens per second (incoming) over ↑ output tokens per second (outgoing).
   <img src="Assets/StatsPanel.png" alt="The stats panel in the compact view: throughput, context and KV cache, requests, engine memory and system charts" width="415" align="top">
 </p>
 
-## Download
+## Download & Install
+
+### Option A: Homebrew Cask (Recommended)
+
+```zsh
+brew install --cask npanj/tap/slipstream-menubar
+```
+
+### Option B: One-line install script
 
 Paste into Terminal to download, verify, install and start the latest release:
 
